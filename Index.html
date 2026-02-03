@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>IT 4403 Dakobie's Submission</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+NZ+Basic:wght@100..400&display=swap" rel="stylesheet">
+    <style>
+
+
+        h1{text-align: center;
+        font-size: 54px;
+        color: #efe7dd;
+        }
+        #IT-head{
+        text-align: center;
+        font-size: 30px;
+        color: #efe7dd;
+        font-family: 'Playwrite NZ Basic';
+        margin-top: -50px;
+        }
+        .Border{
+        border: 3px solid black;
+        padding:1px;
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-top:40px;
+        background-color: #352315;
+        border-radius: 25px;
+        }
+        .Nav-Bar{
+        display: flex;
+        justify-content: space-between;
+        }
+        #Home-Link{
+        font-size:24px;
+        color: #000000;
+        font-family: 'Verdana, sans-serif';
+        }
+        .Home{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        width:150px;
+        border-radius: 45%;
+        padding: 10px 30px;
+        border: none;
+        text-align: center;
+        cursor: pointer;
+        background-color: #c3b091;
+        }
+        #Excercise-Link{
+        font-size: 24px;
+        font-family: 'Verdana, sans-serif';
+        color: #000000;
+        }
+        .Excercise{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        width:150px;
+        border-radius: 45%;
+        padding: 10px 30px;
+        border: none;
+        text-align: center;
+        cursor: pointer;
+        background-color: #c3b091;
+        }
+        #Project-Link{
+        font-size: 24px;
+        font-family: 'Verdana, sans-serif';
+        color: #000000;
+        }
+        .Project{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        width:150px;
+        border-radius: 45%;
+        padding: 10px 30px;
+        border: none;
+        text-align: center;
+        cursor: pointer;
+        background-color: #c3b091;
+        }
+        #Email-Link{
+        font-size: 24px;
+        font-family: 'Verdana, sans-serif';
+        color: #000000;
+
+        }
+        .Email{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 60px;
+        width:150px;
+        border-radius: 45%;
+        padding: 10px 30px;
+        border: none;
+        text-align: center;
+        grids: center;
+        cursor: pointer;
+        background-color: #c3b091;
+        }
+
+
+        .Home-Course{
+
+
+        height: 150px;
+         aspect-ratio: 1.8;
+        --g: radial-gradient(50% 50%, #000 98%, #0000) no-repeat;
+         mask: var(--g) 100% 100%/30% 60%,var(--g) 70% 0/50% 100%,var(--g) 0 100%/36% 68%,var(--g) 27% 18%/26% 40%,linear-gradient(#000 0 0) bottom/67% 58% no-repeat;
+        background: #269af2;
+        display: flex;
+
+        align-items: center;
+        padding-top: 20px;
+}
+
+
+
+        #Info{
+        font-size: 20px;
+        position: sticky;
+        top:10;
+        width: 100%
+        padding: 10px 0;
+        z-index:10;
+        margin-bottom: 20px;
+        display: block;
+        }
+
+
+        #Homebody1{
+        display: block;
+        clear: both;
+        width: max-center;
+        margin: 0 0 1em 0;
+        }
+
+        .Home-About{
+        height: 150px;
+         aspect-ratio: 1.8;
+        --g: radial-gradient(50% 50%, #000 98%, #0000) no-repeat;
+         mask: var(--g) 100% 100%/30% 60%,var(--g) 70% 0/50% 100%,var(--g) 0 100%/36% 68%,var(--g) 27% 18%/26% 40%,linear-gradient(#000 0 0) bottom/67% 58% no-repeat;
+        background: #269af2;
+        display: flex;
+
+        align-items: center;
+        padding-top: 20px;}
+
+
+
+        .Home-Disclaimer{
+        height: 150px;
+         aspect-ratio: 1.8;
+        --g: radial-gradient(50% 50%, #000 98%, #0000) no-repeat;
+         mask: var(--g) 100% 100%/30% 60%,var(--g) 70% 0/50% 100%,var(--g) 0 100%/36% 68%,var(--g) 27% 18%/26% 40%,linear-gradient(#000 0 0) bottom/67% 58% no-repeat;
+        background: #269af2;
+        display: flex;
+
+        align-items: center;
+        padding-top: 20px;}
+
+        .text{
+        display: grid;                            /* Activates the grid container */
+        grid-template-columns: 1fr 1fr 1fr;         /* Creates two equal-width columns */
+        gap: 10px;
+        margin-left: 180px;
+        margin-top: 200px;
+        }
+
+
+        }
+    </style>
+
+</head>
+
+<body bgcolor="#9b4922">
+<div class="Nav-Bar">
+<button class="Home"><a href="Index.html" id="Home-Link">Home</a></button>
+
+<button class="Excercise"><a href="Excercise.html" id="Excercise-Link">Excercise</a></button>
+
+<button class="Project"><a href="Project.html" id="Project-Link">Projects</a></button>
+
+<button class="Email"><a href="mailto:dgarci64@students.kennesaw.edu" id="Email-Link">KSU Email</a></button></div>
+<br>
+<div class="Border">
+    <h1 style="font-family:'Playwrite NZ Basic'">Dakobie Garcia</h1>
+    <h2 id="IT-head">IT 4403</h2>
+</div>
+
+<br>
+
+<div class="text">
+<div class="Home-Course">
+<h3 id="Info">Course Information</h3>
+    <br>
+<p id="Homebody1">IT 4403 - Advanced Web and Mobile Applications</p></div>
+
+<div class="Home-About">
+<h3>About</h3>
+<p>This website showcases my excercises and Lab work for this course and will be updated through the semester </p>
+</div>
+
+<div class="Home-Disclaimer">
+<h3>Disclaimer</h3>
+<p>This website is a student website for the course IT4403. Content is for educational purposes.</p>
+<a href="https://www.kennesaw.edu/ccse/academics/information-technology/" target="_blank">CCSE KSU Department </a>
+</div></div>
+<body>
+
+</html>
