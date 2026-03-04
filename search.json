@@ -1,0 +1,101 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 5,
+  "items": [
+    {
+      "id": "book001",
+      "volumeInfo": {
+        "title": "The Modern Web",
+        "authors": ["Peter Gasston"],
+        "publisher": "No Starch Press",
+        "publishedDate": "2013",
+        "description": "A guide to multi-device web development with HTML5, CSS3, and JavaScript.",
+        "pageCount": 264,
+        "categories": ["Web Design", "Computer"],
+        "imageLinks": {
+          "thumbnail": "cover1.jpg"
+        },
+        "language": "en",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "1593274874" }
+        ]
+      }
+    },
+    {
+      "id": "book002",
+      "volumeInfo": {
+        "title": "Learning Web Design",
+        "authors": ["Jennifer Robbins"],
+        "publisher": "O'Reilly Media",
+        "publishedDate": "2018",
+        "description": "A beginner's guide to HTML, CSS, JavaScript, and web graphics.",
+        "pageCount": 808,
+        "categories": ["Web Design"],
+        "imageLinks": {
+          "thumbnail": "cover2.jpg"
+        },
+        "language": "en",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "1491960205" }
+        ]
+      }
+    },
+    {
+      "id": "book003",
+      "volumeInfo": {
+        "title": "HTML and CSS: Design and Build Websites",
+        "authors": ["Jon Duckett"],
+        "publisher": "Wiley",
+        "publishedDate": "2011",
+        "description": "A beginner-friendly introduction to HTML and CSS with a visually engaging layout.",
+        "pageCount": 490,
+        "categories": ["Web Development"],
+        "imageLinks": {
+          "thumbnail": "cover3.jpg"
+        },
+        "language": "en",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "1118008189" }
+        ]
+      }
+    },
+    {
+      "id": "book004",
+      "volumeInfo": {
+        "title": "JavaScript: The Good Parts",
+        "authors": ["Douglas Crockford"],
+        "publisher": "O'Reilly Media",
+        "publishedDate": "2008",
+        "description": "Unearthing the excellence in JavaScript, focusing on the best features of the language.",
+        "pageCount": 172,
+        "categories": ["Programming"],
+        "imageLinks": {
+          "thumbnail": "cover4.jpg"
+        },
+        "language": "en",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "0596517742" }
+        ]
+      }
+    },
+    {
+      "id": "book005",
+      "volumeInfo": {
+        "title": "Web Design with HTML, CSS, JavaScript and jQuery",
+        "authors": ["Jon Duckett"],
+        "publisher": "Wiley",
+        "publishedDate": "2014",
+        "description": "A two-book set covering modern web design and interactive front-end development.",
+        "pageCount": 1080,
+        "categories": ["Web Design", "Programming"],
+        "imageLinks": {
+          "thumbnail": "cover5.jpg"
+        },
+        "language": "en",
+        "industryIdentifiers": [
+          { "type": "ISBN_10", "identifier": "1118907442" }
+        ]
+      }
+    }
+  ]
+}
