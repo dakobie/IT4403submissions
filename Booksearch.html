@@ -2,12 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Book Search</title>
+    <title>Book Search Results</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #book-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .book-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            width: 250px;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+        }
+        .book-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .book-card h2 {
+            font-size: 16px;
+            color: #222;
+            margin: 0 0 8px 0;
+        }
+        .book-card p {
+            font-size: 14px;
+            color: #555;
+            margin: 4px 0;
+        }
+    </style>
 </head>
 <body>
-<h1>Book Search</h1>
-<p1>
+<h1>Book Search Results: "Modern Web"</h1>
+<div id="book-list"></div>
 
-</p1>
+<script>
+        $(document).ready(function() {
+            $.getJSON("search.json", function(data) {
+                console.log(data);
+
+                var output = "";
+
+                $.each(data.items, function(index, book) {
+                    var info = book.volumeInfo;
+
+                    var title       = info.title || "No Title";
+                    var authors     = info.authors ? info.authors.join(', ') : "Unknown Author";
+                    var publisher   = info.publisher || "Unknown Publisher";
+                    var date        = info.publishedDate || "Unknown Date";
+                    var pages       = info.pageCount || "N/A";
+                    var categories  = info.categories ? info.categories.join(', ') : "N/A";
+                    var thumbnail   = info.imageLinks ? info.imageLinks.thumbnail : "placeholder.jpg";
+                    var description = info.description || "No description available.";
+
+                    output += `
+                        <div class="book-card">
+                            <img src="${thumbnail}" alt="${title}">
+                            <h2>${title}</h2>
+                            <p><strong>Author:</strong> ${authors}</p>
+                            <p><strong>Publisher:</strong> ${publisher}</p>
+                            <p><strong>Year:</strong> ${date}</p>
+                            <p><strong>Pages:</strong> ${pages}</p>
+                            <p><strong>Categories:</strong> ${categories}</p>
+                            <p>${description}</p>
+                        </div>
+                    `;
+                });
+
+                $("#book-list").html(output);
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                $("#book-list").html("<p>Error loading books: " + textStatus + "</p>");
+                console.error("Error: " + errorThrown);
+            });
+        });
+    </script>
 </body>
 </html>
