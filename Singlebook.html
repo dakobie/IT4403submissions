@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Single Book</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>The Modern Web</h1>
+<div id="book-details"
+>
+
+</div>
+
+
+<script>
+   $(document).ready(function() {
+
+    $.getJSON("LabJSON.json", function(bookData) {
+
+        console.log(bookData);
+
+
+        var output = `
+            <h2>${bookData.title}</h2>
+            <p><strong>Author:</strong> ${bookData.author}</p>
+            <p><strong>Year Published:</strong> ${bookData.year}</p>
+            <p><strong>Language:</strong> ${bookData.details.language}</p>
+            <p><strong>Pages:</strong> ${bookData.details.pages}</p>
+            <p><strong>ISBN:</strong> ${bookData.details.isbn}</p>
+            <p><strong>Genres:</strong> ${bookData.genres.join(', ')}</p>
+        `;
+
+
+        $("#book-details").html(output);
+    })
+    .fail(function(jqXHR, textStatus, errorThrown) {
+        $("#book-details").html("<p>Error loading book details: " + textStatus + "</p>");
+        console.error("Error: " + errorThrown);
+    });
+});
+
+</script></body>
+</html>

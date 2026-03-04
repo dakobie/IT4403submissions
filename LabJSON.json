@@ -1,0 +1,13 @@
+{
+  "title": "The Modern Web: Multi-device Web Development with HTML5, CSS3, and Javascript",
+  "author": "Peter Gasston",
+  "publisher": "No Starch Press",
+  "year": 2013,
+  "description": "Peter Gasston's The Modern Web will guide you through the latest and most important tools of device-agnostic  web development, including HTML5, CSS3, and JavaScript. His plain-English explanations and practical examples emphasize the techniques, principles, and practices that you'll need to easily transcend individual browser quirks and stay relevant as these technologies are updated.",
+  "genres": ["Web Design", "Computer"],
+  "details": {
+    "pages": 264,
+    "language": "English",
+    "isbn": "1593274874"
+  }
+}
