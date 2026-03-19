@@ -78,20 +78,19 @@ function loadPage(page) {
 
 function displayResults(books) {
     $("#results").empty();
-
+    if (!books || books.length === 0) {
+        $("#results").html("<p>No results found.</p>");
+        return;
+    }
     books.forEach(book => {
         let info = book.volumeInfo;
-
         let title = info.title;
         let img = info.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
         let id = book.id;
-
         $("#results").append(`
             <div class="book">
                 <img src="${img}">
-                <p>
-                    <a href="details.html?id=${id}">${title}</a>
-                </p>
+                <p><a href="details.html?id=${id}">${title}</a></p>
             </div>
         `);
     });
