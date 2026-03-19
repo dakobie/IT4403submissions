@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Details</title>
+
+    <style>
+        #details {
+            max-width: 800px;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        img {
+            max-width: 200px;
+            display: block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="bookshelf.html">My Bookshelf</a>
+</nav>
+
+<h1>Book Details</h1>
+
+<div id="details"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const bookId = params.get("id");
+
+let url = `https://www.googleapis.com/books/v1/volumes/${bookId}`;
+
+$.getJSON(url, function (book) {
+    let info = book.volumeInfo;
+    let sale = book.saleInfo;
+
+    let title = info.title || "No title";
+    let authors = info.authors ? info.authors.join(", ") : "Unknown";
+    let publisher = info.publisher || "Unknown";
+    let description = info.description || "No description available";
+    let img = info.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
+
+    let price = "Not for sale";
+    if (sale && sale.listPrice) {
+        price = `${sale.listPrice.amount} ${sale.listPrice.currencyCode}`;
+    }
+
+    $("#details").html(`
+        <h2>${title}</h2>
+        <img src="${img}" alt="${title}">
+        <p><strong>Authors:</strong> ${authors}</p>
+        <p><strong>Publisher:</strong> ${publisher}</p>
+        <p><strong>Price:</strong> ${price}</p>
+        <p><strong>Description:</strong></p>
+        <p>${description}</p>
+    `);
+});
+</script>
+
+</body>
+</html>

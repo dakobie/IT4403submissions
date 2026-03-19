@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+
+    <style>
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .book {
+            width: 150px;
+            text-align: center;
+        }
+
+        .book img {
+            width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="bookshelf.html">My Bookshelf</a>
+</nav>
+
+<h1>Book Search</h1>
+
+<input type="text" id="searchInput" placeholder="Search books...">
+<button id="searchBtn">Search</button>
+
+<br><br>
+
+<label>Page:</label>
+<select id="pageSelect"></select>
+
+<div id="results"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+let currentQuery = "";
+let resultsPerPage = 10;
+
+$("#searchBtn").click(function () {
+    currentQuery = $("#searchInput").val();
+    loadPage(0);
+    setupPagination();
+});
+
+function loadPage(page) {
+    let startIndex = page * resultsPerPage;
+
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${currentQuery}&startIndex=${startIndex}&maxResults=${resultsPerPage}`;
+
+    $.getJSON(url, function (data) {
+        displayResults(data.items);
+    });
+}
+
+function displayResults(books) {
+    $("#results").empty();
+
+    books.forEach(book => {
+        let info = book.volumeInfo;
+
+        let title = info.title;
+        let img = info.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
+        let id = book.id;
+
+        $("#results").append(`
+            <div class="book">
+                <img src="${img}">
+                <p>
+                    <a href="details.html?id=${id}">${title}</a>
+                </p>
+            </div>
+        `);
+    });
+}
+
+function setupPagination() {
+    $("#pageSelect").empty();
+
+    for (let i = 0; i < 6; i++) { // 6 pages = 60 results
+        $("#pageSelect").append(`<option value="${i}">Page ${i + 1}</option>`);
+    }
+}
+
+$("#pageSelect").change(function () {
+    let selectedPage = $(this).val();
+    loadPage(selectedPage);
+});
+</script>
+
+</body>
+</html>
