@@ -2,13 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bookshelf</title>
+    <title>My Bookshelf</title>
 
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background: #1a1a2e;
+            padding: 10px 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a1a2e;
+            margin-top: 30px;
+        }
+
         #bookshelf {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            padding: 20px 40px;
+            justify-content: center;
         }
 
         .book {
@@ -20,6 +50,21 @@
             width: 100%;
             height: auto;
             border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .book p {
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .book a {
+            color: #1a1a2e;
+            text-decoration: none;
+        }
+
+        .book a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -33,36 +78,55 @@
 
 <h1>My Bookshelf</h1>
 
-<div id="bookshelf"></div>
+<div id="bookshelf">
+    <p id="loading">Loading bookshelf...</p>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+// Volume IDs from your public Google Books bookshelf:
+// https://books.google.com/books?uid=115385282140903618553&as_coll=1001
 const bookIds = [
-  "SR7HXy2XvBEC",
-  "ULRJCgAAQBAJ",
-  "etYGBgAAQBAJ",
-  "7VmWBQAAQBAJ",
-  "5m_XSPjasJQC"
+    "SR7HXy2XvBEC",
+    "ULRJCgAAQBAJ",
+    "etYGBgAAQBAJ",
+    "7VmWBQAAQBAJ",
+    "5m_XSPjasJQC"
 ];
 
-bookIds.forEach(id => {
-    let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}&key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
+let loaded = 0;
 
-    $.getJSON(url, function (book) {
-        let title = book.volumeInfo.title;
-        let img = book.volumeInfo.imageLinks?.thumbnail
-                  || "https://via.placeholder.com/128x195";
+bookIds.forEach(function(id) {
+    // *** FIXED: correct endpoint uses /volumes/{id} not a search query ***
+    let url = `https://www.googleapis.com/books/v1/volumes/${id}?key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
-        $("#bookshelf").append(`
-            <div class="book">
-                <img src="${img}" alt="${title}">
-                <p>
-                    <a href="details.html?id=${id}">${title}</a>
-                </p>
-            </div>
-        `);
-    });
+    fetch(url)
+        .then(res => res.json())
+        .then(function(book) {
+            loaded++;
+            if (loaded === 1) $("#loading").hide();
+
+            if (book.error || !book.volumeInfo) return;
+
+            let info = book.volumeInfo;
+            let title = info.title || "Unknown Title";
+            let img = (info.imageLinks && info.imageLinks.thumbnail)
+                ? info.imageLinks.thumbnail.replace("http://", "https://")
+                : "https://via.placeholder.com/128x195?text=No+Cover";
+
+            $("#bookshelf").append(`
+                <div class="book">
+                    <img src="${img}" alt="${title}">
+                    <p>
+                        <a href="details.html?id=${id}">${title}</a>
+                    </p>
+                </div>
+            `);
+        })
+        .catch(function(err) {
+            console.error("Error loading book " + id + ":", err);
+        });
 });
 </script>
 
