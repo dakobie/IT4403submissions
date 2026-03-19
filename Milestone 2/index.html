@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+
     <style>
         #results {
             display: flex;
@@ -10,16 +11,19 @@
             gap: 20px;
             margin-top: 20px;
         }
+
         .book {
             width: 150px;
             text-align: center;
         }
+
         .book img {
             width: 100%;
             border-radius: 8px;
         }
     </style>
 </head>
+
 <body>
 
 <nav>
@@ -87,9 +91,12 @@ function displayResults(books) {
     books.forEach(function(book) {
         let info = book.volumeInfo;
         let title = info.title || "Unknown Title";
+
+        // *** THE KEY FIX: force https:// on image URLs so Azure doesn't block them ***
         let img = (info.imageLinks && info.imageLinks.thumbnail)
             ? info.imageLinks.thumbnail.replace("http://", "https://")
             : "https://via.placeholder.com/128x195?text=No+Cover";
+
         let id = book.id;
 
         $("#results").append(`
