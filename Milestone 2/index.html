@@ -57,12 +57,23 @@ $("#searchBtn").click(function () {
 
 function loadPage(page) {
     let startIndex = page * resultsPerPage;
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}`;
 
-    let url = `https://www.googleapis.com/books/v1/volumes?q=${currentQuery}&startIndex=${startIndex}&maxResults=${resultsPerPage}`;
-
-    $.getJSON(url, function (data) {
-        displayResults(data.items);
-    });
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            console.log("API response:", data); // 👈 check this in console
+            if (data.items) {
+                displayResults(data.items);
+            } else {
+                $("#results").html("<p>No results found.</p>");
+            }
+        })
+        .catch(err => {
+            console.error("API error:", err);
+            $("#results").html("<p>Error loading books. Check console.</p>");
+        });
+}
 }
 
 function displayResults(books) {
