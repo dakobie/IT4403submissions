@@ -47,7 +47,7 @@ const bookIds = [
 ];
 
 bookIds.forEach(id => {
-    let url = `https://www.googleapis.com/books/v1/volumes/${id}`;
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}&key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
     $.getJSON(url, function (book) {
         let title = book.volumeInfo.title;
