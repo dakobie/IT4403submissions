@@ -63,7 +63,7 @@ $("#searchBtn").click(function () {
 
 function loadPage(page) {
     let startIndex = page * resultsPerPage;
-    let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}`;
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}&key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
     $("#results").html("<p>Loading...</p>");
 
