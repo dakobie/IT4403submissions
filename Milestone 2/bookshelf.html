@@ -5,66 +5,94 @@
     <title>My Bookshelf</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5efe6;
+            color: #3b1f0f;
+        }
+
         nav {
-            background: #1a1a2e;
-            padding: 10px 20px;
+            background-color: #5c3317;
+            padding: 12px 24px;
         }
 
         nav a {
-            color: white;
+            color: #f5efe6;
             text-decoration: none;
             margin-right: 20px;
             font-size: 15px;
+            font-weight: bold;
         }
 
         nav a:hover {
             text-decoration: underline;
+            color: #f0c080;
         }
 
         h1 {
             text-align: center;
-            color: #1a1a2e;
-            margin-top: 30px;
+            color: #5c3317;
+            margin: 30px 0 20px;
+            font-size: 28px;
         }
 
         #bookshelf {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            padding: 20px 40px;
+            padding: 20px 40px 40px;
             justify-content: center;
         }
 
         .book {
             width: 150px;
             text-align: center;
+            background: #fff8f0;
+            border: 1px solid #d4a97a;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 6px rgba(92,51,23,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .book:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(92,51,23,0.2);
         }
 
         .book img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            border-radius: 6px;
         }
 
         .book p {
+            margin-top: 8px;
             font-size: 13px;
-            margin-top: 6px;
         }
 
         .book a {
-            color: #1a1a2e;
+            color: #5c3317;
             text-decoration: none;
+            font-weight: bold;
         }
 
         .book a:hover {
             text-decoration: underline;
+            color: #a0522d;
+        }
+
+        #loading {
+            text-align: center;
+            color: #a0522d;
+            font-size: 15px;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -85,7 +113,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-// Volume IDs from your public Google Books bookshelf:
+// Volume IDs from public Google Books bookshelf:
 // https://books.google.com/books?uid=115385282140903618553&as_coll=1001
 const bookIds = [
     "SR7HXy2XvBEC",
@@ -98,7 +126,6 @@ const bookIds = [
 let loaded = 0;
 
 bookIds.forEach(function(id) {
-    // *** FIXED: correct endpoint uses /volumes/{id} not a search query ***
     let url = `https://www.googleapis.com/books/v1/volumes/${id}?key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
     fetch(url)
@@ -132,3 +159,4 @@ bookIds.forEach(function(id) {
 
 </body>
 </html>
+
