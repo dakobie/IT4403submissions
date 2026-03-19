@@ -36,7 +36,7 @@
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get("id");
 
-let url = `https://www.googleapis.com/books/v1/volumes/${bookId}`;
+let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}&key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
 $.getJSON(url, function (book) {
     let info = book.volumeInfo;
