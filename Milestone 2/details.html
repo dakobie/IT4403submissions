@@ -5,16 +5,57 @@
     <title>Book Details</title>
 
     <style>
-        #details {
-            max-width: 800px;
-            margin: 20px auto;
+        body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        img {
+        nav {
+            background: #1a1a2e;
+            padding: 10px 20px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 15px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        #details {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        #details img {
             max-width: 200px;
             display: block;
             margin-bottom: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        #details h2 {
+            margin-top: 0;
+            color: #1a1a2e;
+        }
+
+        #details p {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        #loading {
+            text-align: center;
+            margin-top: 60px;
+            color: #888;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -26,8 +67,9 @@
     <a href="bookshelf.html">My Bookshelf</a>
 </nav>
 
-<h1>Book Details</h1>
+<h1 style="text-align:center; color:#1a1a2e;">Book Details</h1>
 
+<div id="loading">Loading book details...</div>
 <div id="details"></div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -36,33 +78,56 @@
 const params = new URLSearchParams(window.location.search);
 const bookId = params.get("id");
 
-let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(currentQuery)}&startIndex=${startIndex}&maxResults=${resultsPerPage}&key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
+if (!bookId) {
+    $("#loading").hide();
+    $("#details").html("<p style='color:red;'>No book ID provided. <a href='index.html'>Go back to search.</a></p>");
+} else {
+    // *** FIXED: correct endpoint uses /volumes/{id} not a search query ***
+    let url = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=AIzaSyDV80zZLdyOawgkP0t-bCAduJPe2wojnA0`;
 
-$.getJSON(url, function (book) {
-    let info = book.volumeInfo;
-    let sale = book.saleInfo;
+    fetch(url)
+        .then(res => res.json())
+        .then(function(book) {
+            $("#loading").hide();
 
-    let title = info.title || "No title";
-    let authors = info.authors ? info.authors.join(", ") : "Unknown";
-    let publisher = info.publisher || "Unknown";
-    let description = info.description || "No description available";
-    let img = info.imageLinks?.thumbnail || "https://via.placeholder.com/128x195";
+            if (book.error) {
+                $("#details").html("<p style='color:red;'>Error loading book: " + book.error.message + "</p>");
+                return;
+            }
 
-    let price = "Not for sale";
-    if (sale && sale.listPrice) {
-        price = `${sale.listPrice.amount} ${sale.listPrice.currencyCode}`;
-    }
+            let info = book.volumeInfo;
+            let sale = book.saleInfo;
 
-    $("#details").html(`
-        <h2>${title}</h2>
-        <img src="${img}" alt="${title}">
-        <p><strong>Authors:</strong> ${authors}</p>
-        <p><strong>Publisher:</strong> ${publisher}</p>
-        <p><strong>Price:</strong> ${price}</p>
-        <p><strong>Description:</strong></p>
-        <p>${description}</p>
-    `);
-});
+            let title = info.title || "No title";
+            let authors = info.authors ? info.authors.join(", ") : "Unknown";
+            let publisher = info.publisher || "Unknown";
+            let description = info.description || "No description available.";
+            let img = (info.imageLinks && info.imageLinks.thumbnail)
+                ? info.imageLinks.thumbnail.replace("http://", "https://")
+                : "https://via.placeholder.com/128x195?text=No+Cover";
+
+            let price = "Not for sale";
+            if (sale && sale.listPrice) {
+                price = `${sale.listPrice.amount} ${sale.listPrice.currencyCode}`;
+            }
+
+            $("#details").html(`
+                <h2>${title}</h2>
+                <img src="${img}" alt="${title}">
+                <p><strong>Authors:</strong> ${authors}</p>
+                <p><strong>Publisher:</strong> ${publisher}</p>
+                <p><strong>Price:</strong> ${price}</p>
+                <p><strong>Description:</strong></p>
+                <p>${description}</p>
+                <br>
+                <a href="index.html">&larr; Back to Search</a>
+            `);
+        })
+        .catch(function(err) {
+            $("#loading").hide();
+            $("#details").html("<p style='color:red;'>Failed to load book details: " + err.message + "</p>");
+        });
+}
 </script>
 
 </body>
