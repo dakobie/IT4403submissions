@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Milestone 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    :root {
+      --bg:        #2c1a0e;
+      --surface:   #3a2213;
+      --card:      #4a2e1a;
+      --border:    #ffffff12;
+      --accent:    #d4956a;
+      --accent2:   #8b4513;
+      --text:      #f5ede4;
+      --muted:     #9e7d68;
+      --radius:    6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 999;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: .4;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: linear-gradient(to bottom, #2c1a0efa 80%, transparent);
+      padding: 18px 40px 14px;
+      display: flex; align-items: center; gap: 32px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      color: var(--accent);
+      text-shadow: 0 0 30px #d4956a55;
+      flex-shrink: 0;
+      cursor: default;
+    }
+    .logo span { color: var(--text); }
+
+    .search-wrap {
+      flex: 1;
+      max-width: 520px;
+      display: flex;
+      gap: 0;
+    }
+
+    #search-input {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-right: none;
+      border-radius: var(--radius) 0 0 var(--radius);
+      color: var(--text);
+      padding: 10px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    #search-input:focus { border-color: var(--accent); }
+    #search-input::placeholder { color: var(--muted); }
+
+    #search-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 10px 22px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: background .2s, transform .1s;
+    }
+    #search-btn:hover { background: #e0aa85; }
+    #search-btn:active { transform: scale(.97); }
+
+    /* ── Nav tabs ── */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 8px 18px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: .9rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      border-radius: var(--radius);
+      transition: all .2s;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--border); }
+    .tab-btn.active {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: #d4956a15;
+    }
+
+    /* ── Layout ── */
+    main {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 0;
+      min-height: calc(100vh - 68px);
+    }
+
+    /* ── Left panel ── */
+    .left-panel {
+      padding: 32px 40px;
+      border-right: 1px solid var(--border);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 3px;
+      color: var(--text);
+    }
+    .section-count {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    /* ── Grid ── */
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+    }
+
+    .movie-card {
+      cursor: pointer;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--border);
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+      position: relative;
+    }
+    .movie-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 32px #d4956a18;
+    }
+    .movie-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .card-poster {
+      width: 100%; aspect-ratio: 2/3;
+      object-fit: cover;
+      display: block;
+      background: var(--surface);
+    }
+
+    .card-no-poster {
+      width: 100%; aspect-ratio: 2/3;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .card-body {
+      padding: 8px 10px 10px;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-year {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      gap: 6px;
+      margin-top: 28px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      width: 36px; height: 36px;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .page-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #000;
+      font-weight: 500;
+    }
+    .page-btn:disabled { opacity: .3; cursor: default; }
+
+    /* ── Right panel (details) ── */
+    .right-panel {
+      position: sticky;
+      top: 68px;
+      height: calc(100vh - 68px);
+      overflow-y: auto;
+      padding: 32px 28px;
+      background: var(--surface);
+    }
+
+    .detail-empty {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      text-align: center;
+      opacity: .5;
+    }
+    .detail-empty .icon { font-size: 3rem; }
+    .detail-empty p { font-size: 13px; font-weight: 300; }
+
+    .detail-content { animation: fadeUp .3s ease; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .detail-poster-wrap {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .detail-poster {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+    }
+    .detail-poster-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--surface) 0%, transparent 60%);
+    }
+    .detail-poster-title {
+      position: absolute;
+      bottom: 14px; left: 14px; right: 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+      line-height: 1.1;
+      text-shadow: 0 2px 8px #0008;
+    }
+
+    .detail-no-poster {
+      width: 100%; aspect-ratio: 16/9;
+      background: var(--card);
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .detail-title-plain {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .detail-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .meta-chip {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 3px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+    .meta-chip.rating {
+      color: var(--accent);
+      border-color: #d4956a44;
+      background: #d4956a0d;
+    }
+
+    .detail-overview {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: #e0cfc4;
+    }
+
+    .genres-wrap {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .genre-tag {
+      background: #d4956a12;
+      border: 1px solid #d4956a33;
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 11px;
+      letter-spacing: .5px;
+    }
+
+    /* ── Loading / states ── */
+    .loading-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 0;
+      gap: 16px;
+      color: var(--muted);
+    }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      background: #8b451318;
+      border: 1px solid #8b451344;
+      color: #c0673a;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 13px;
+    }
+
+    .empty-msg {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #ffffff18; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ffffff30; }
+
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .right-panel { position: static; height: auto; border-top: 1px solid var(--border); }
+      header { padding: 14px 20px; flex-wrap: wrap; gap: 14px; }
+      .left-panel { padding: 24px 20px; }
+      .tabs { order: 3; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+
+
+<!-- Header -->
+<header>
+  <div class="logo">Movie<span>Search</span></div>
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="Search movies…"/>
+    <button id="search-btn">Search</button>
+  </div>
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="collection" data-cat="popular">🔥 Popular</button>
+    <button class="tab-btn" data-tab="collection" data-cat="top_rated">⭐ Top Rated</button>
+    <button class="tab-btn" data-tab="collection" data-cat="upcoming">🎬 Upcoming</button>
+  </nav>
+</header>
+
+<main>
+  <section class="left-panel">
+    <div class="section-header">
+      <h2 class="section-title" id="section-title">Popular Movies</h2>
+      <span class="section-count" id="section-count"></span>
+    </div>
+    <div id="movies-container"></div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <aside class="right-panel" id="right-panel">
+    <div class="detail-empty" id="detail-empty">
+      <div class="icon">🎞</div>
+      <p>Click any movie<br>to see details</p>
+    </div>
+    <div id="detail-content" style="display:none;"></div>
+  </aside>
+</main>
+
+<script>
+// ── State
+let API_KEY = '4566b74db4c7b0ce5e233fa665e4ca17';
+const BASE  = 'https://api.themoviedb.org/3';
+const IMG   = 'https://image.tmdb.org/t/p/';
+
+let state = {
+  mode:        'collection',  // 'collection' | 'search'
+  category:    'popular',
+  query:       '',
+  allMovies:   [],            // all 50 fetched results
+  page:        1,             // current UI page (1–5)
+  perPage:     10,
+};
+
+// ── API Key gate
+$('#api-key-submit').on('click', function () {
+  const key = $('#api-key-input').val().trim();
+  if (!key) { $('#api-key-input').css('border-color', '#e74c3c'); return; }
+  API_KEY = key;
+  $('#api-overlay').fadeOut(250, function () {
+    $(this).remove();
+    loadCollection(state.category);
+  });
+});
+
+
+// ── Helpers
+function posterUrl(path, size='w300') {
+  return path ? `${IMG}${size}${path}` : null;
+}
+
+function showLoading() {
+  $('#movies-container').html(`
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <span>Loading…</span>
+    </div>`);
+  $('#pagination').empty();
+}
+
+function showError(msg) {
+  $('#movies-container').html(`<div class="error-msg">⚠ ${msg}</div>`);
+}
+
+// ── Render grid
+function renderGrid() {
+  const start = (state.page - 1) * state.perPage;
+  const slice = state.allMovies.slice(start, start + state.perPage);
+
+  if (!slice.length) {
+    $('#movies-container').html('<div class="empty-msg">No results found.</div>');
+    $('#pagination').empty();
+    return;
+  }
+
+  const cards = slice.map(m => {
+    const poster = posterUrl(m.poster_path);
+    const year   = m.release_date ? m.release_date.slice(0,4) : '—';
+    const img    = poster
+      ? `<img class="card-poster" src="${poster}" alt="${escHtml(m.title)}" loading="lazy"/>`
+      : `<div class="card-no-poster">No Poster</div>`;
+    return `
+      <div class="movie-card" data-id="${m.id}">
+        ${img}
+        <div class="card-body">
+          <div class="card-title">${escHtml(m.title)}</div>
+          <div class="card-year">${year}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  $('#movies-container').html(`<div class="movies-grid">${cards}</div>`);
+
+  // Pagination
+  const totalPages = Math.ceil(Math.min(state.allMovies.length, 50) / state.perPage);
+  let pag = '';
+  for (let i = 1; i <= totalPages; i++) {
+    pag += `<button class="page-btn ${i === state.page ? 'active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  $('#pagination').html(pag);
+  $('#section-count').text(`(${state.allMovies.length} movies · page ${state.page} of ${totalPages})`);
+}
+
+function escHtml(str) {
+  return $('<div>').text(str || '').html();
+}
+
+// ── Collection fetch
+function loadCollection(cat) {
+  state.mode     = 'collection';
+  state.category = cat;
+  state.page     = 1;
+  state.allMovies = [];
+
+  const catLabel = { popular: 'Popular Movies', top_rated: 'Top Rated Movies', upcoming: 'Upcoming Movies' };
+  $('#section-title').text(catLabel[cat] || 'Movies');
+  showLoading();
+
+  // fetch 3 pages (60 items), take first 50
+  const reqs = [1, 2, 3].map(p =>
+    $.getJSON(`${BASE}/movie/${cat}`, { api_key: API_KEY, page: p })
+  );
+
+  $.when(...reqs).then(function (...responses) {
+    let movies = [];
+    responses.forEach(r => {
+      const data = Array.isArray(r) ? r[0] : r;
+      movies = movies.concat(data.results || []);
+    });
+    state.allMovies = movies.slice(0, 50);
+    renderGrid();
+    clearDetail();
+  }).fail(function (xhr) {
+    showError('Failed to load movies. Check your API key.');
+  });
+}
+
+// ── Search fetch
+function doSearch(query) {
+  if (!query.trim()) return;
+  state.mode  = 'search';
+  state.query = query.trim();
+  state.page  = 1;
+  state.allMovies = [];
+
+  $('#section-title').text(`Results: "${state.query}"`);
+  showLoading();
+  clearDetail();
+
+  // fetch 5 search pages (max 100, take 50)
+  const reqs = [1, 2, 3, 4, 5].map(p =>
+    $.ajax({
+      url: `${BASE}/search/movie`,
+      data: { api_key: API_KEY, query: state.query, page: p },
+      dataType: 'json',
+    })
+  );
+
+  $.when(...reqs).then(function (...responses) {
+    let movies = [];
+    responses.forEach(r => {
+      const data = Array.isArray(r) ? r[0] : r;
+      movies = movies.concat(data.results || []);
+    });
+    state.allMovies = movies.slice(0, 50);
+    renderGrid();
+  }).fail(function () {
+    showError('Search failed. Check your API key or network.');
+  });
+}
+
+// ── Detail panel
+function clearDetail() {
+  $('#detail-empty').show();
+  $('#detail-content').hide().empty();
+  $('.movie-card').removeClass('active');
+}
+
+function showDetail(movieId) {
+  $.ajax({
+    url: `${BASE}/movie/${movieId}`,
+    data: { api_key: API_KEY },
+    dataType: 'json',
+    success: function (m) {
+      const backdrop = m.backdrop_path ? posterUrl(m.backdrop_path, 'w780') : null;
+      const poster   = m.poster_path   ? posterUrl(m.poster_path, 'w342') : null;
+      const imgSrc   = backdrop || poster;
+
+      const rating = m.vote_average ? `⭐ ${m.vote_average.toFixed(1)} / 10` : '';
+      const year   = m.release_date ? m.release_date.slice(0,4) : '';
+      const runtime = m.runtime ? `${m.runtime} min` : '';
+      const genres  = (m.genres || []).map(g => `<span class="genre-tag">${escHtml(g.name)}</span>`).join('');
+
+      const posterHtml = imgSrc
+        ? `<div class="detail-poster-wrap">
+             <img class="detail-poster" src="${imgSrc}" alt="${escHtml(m.title)}"/>
+             <div class="detail-poster-overlay"></div>
+             <div class="detail-poster-title">${escHtml(m.title)}</div>
+           </div>`
+        : `<div class="detail-no-poster">No Image Available</div>
+           <div class="detail-title-plain">${escHtml(m.title)}</div>`;
+
+      const chips = [year, runtime, rating].filter(Boolean)
+        .map(c => `<span class="meta-chip ${c.startsWith('⭐') ? 'rating' : ''}">${c}</span>`).join('');
+
+      const html = `
+        <div class="detail-content">
+          ${posterHtml}
+          <div class="detail-meta">${chips}</div>
+          ${genres ? `<div class="genres-wrap">${genres}</div>` : ''}
+          <p class="detail-overview" style="margin-top:14px">
+            ${escHtml(m.overview || 'No overview available.')}
+          </p>
+        </div>`;
+
+      $('#detail-empty').hide();
+      $('#detail-content').html(html).show();
+      $('#right-panel').scrollTop(0);
+    },
+    error: function () {
+      $('#detail-empty').hide();
+      $('#detail-content').html('<div class="error-msg">⚠ Could not load details.</div>').show();
+    }
+  });
+}
+
+// ── Events
+$(document).on('click', '.movie-card', function () {
+  $('.movie-card').removeClass('active');
+  $(this).addClass('active');
+  showDetail($(this).data('id'));
+});
+
+$(document).on('click', '.page-btn', function () {
+  state.page = parseInt($(this).data('page'));
+  renderGrid();
+  $('.left-panel').scrollTop(0);
+  clearDetail();
+});
+
+$('#search-btn').on('click', function () {
+  doSearch($('#search-input').val());
+  $('.tab-btn').removeClass('active');
+});
+
+$('#search-input').on('keydown', function (e) {
+  if (e.key === 'Enter') {
+    doSearch($(this).val());
+    $('.tab-btn').removeClass('active');
+  }
+});
+
+$('.tab-btn').on('click', function () {
+  $('.tab-btn').removeClass('active');
+  $(this).addClass('active');
+  $('#search-input').val('');
+  loadCollection($(this).data('cat'));
+});
+</script>
+</body>
+</html>
