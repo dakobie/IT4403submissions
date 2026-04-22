@@ -137,6 +137,9 @@
       <span class="section-count" id="section-count"></span>
     </div>
     <div id="movies-container"></div>
+    <div style="text-align:center; margin-top:20px;">
+  <button id="loadMoreBtn">Load More</button>
+</div>
     <div class="pagination" id="pagination"></div>
   </section>
   <aside class="right-panel" id="right-panel">
@@ -204,7 +207,7 @@ $(function() {
   var BASE    = 'https://api.themoviedb.org/3';
   var IMG     = 'https://image.tmdb.org/t/p/';
 
-  var state = { mode:'collection', category:'popular', query:'', allMovies:[], page:1, perPage:10, view:'grid' };
+  var state = { mode:'collection', category:'popular', query:'', allMovies:[], page:1, perPage:10, view:'grid', apiPage:1 };
   var acTimer = null;
   var currentDetailId = null;
 
@@ -290,26 +293,30 @@ $(function() {
   }
 
   function loadCollection(cat) {
+    state.apiPage = 1;
+    state.allMovies = [];
     state.mode = 'collection'; state.category = cat; state.page = 1; state.allMovies = []; currentDetailId = null;
     var labels = { popular:'Popular Movies', top_rated:'Top Rated Movies', upcoming:'Upcoming Movies' };
     $('#section-title').text(labels[cat] || 'Movies');
     showLoading(); clearDetail();
     $.ajax({
-      url: BASE+'/movie/'+cat, data: { api_key: API_KEY, page: 1 }, dataType: 'json',
-      success: function(data) { state.allMovies = data.results || []; renderGrid(); },
+      url: BASE+'/movie/'+cat, data: { api_key: API_KEY, page: state.apiPage  }, dataType: 'json',
+      success: function(data) { state.allMovies = state.allMovies.concat(data.results || []); renderGrid(); },
       error: function(xhr) { showError('Failed to load ('+xhr.status+')'); }
     });
   }
 
   function doSearch(query) {
+    state.apiPage = 1;
+    state.allMovies = [];
     if (!query.trim()) return;
     state.mode = 'search'; state.query = query.trim(); state.page = 1; state.allMovies = []; currentDetailId = null;
     $('#search-input').val(state.query); $('#autocomplete-list').hide().empty();
     $('#section-title').text('Results: "'+state.query+'"');
     showLoading(); clearDetail(); $('.tab-btn,#fav-tab-btn').removeClass('active');
     $.ajax({
-      url: BASE+'/search/movie', data: { api_key: API_KEY, query: state.query, page: 1 }, dataType: 'json',
-      success: function(data) { state.allMovies = data.results || []; renderGrid(); },
+      url: BASE+'/search/movie', data: { api_key: API_KEY, query: state.query, page: state.apiPage }, dataType: 'json',
+      success: function(data) { state.allMovies = state.allMovies.concat(data.results || []); renderGrid(); },
       error: function() { showError('Search failed.'); }
     });
   }
@@ -384,7 +391,29 @@ $(function() {
     if (currentDetailId===id) syncDetailFavBtn(id);
     if (state.mode==='favorites') renderFavorites();
   });
+  $('#loadMoreBtn').on('click', function() {
+  state.apiPage++;
 
+  if (state.mode === 'search') {
+    $.ajax({
+      url: BASE+'/search/movie',
+      data: { api_key: API_KEY, query: state.query, page: state.apiPage },
+      success: function(data) {
+        state.allMovies = state.allMovies.concat(data.results || []);
+        renderGrid();
+      }
+    });
+  } else {
+    $.ajax({
+      url: BASE+'/movie/'+state.category,
+      data: { api_key: API_KEY, page: state.apiPage },
+      success: function(data) {
+        state.allMovies = state.allMovies.concat(data.results || []);
+        renderGrid();
+      }
+    });
+  }
+});
   $(document).on('click', '.list-fav-btn', function(e) {
     e.stopPropagation();
     var id = parseInt($(this).closest('[data-id]').data('id'));
