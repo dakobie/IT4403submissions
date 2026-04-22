@@ -632,14 +632,18 @@ function loadCollection(cat) {
   $('#section-title').text(labels[cat] || 'Movies');
   showLoading(); clearDetail();
 
-  const reqs = [1,2,3].map(p => $.getJSON(`${BASE}/movie/${cat}`, { api_key: API_KEY, page: p }));
-
-  $.when(...reqs).then(function(...responses) {
-    let movies = [];
-    responses.forEach(r => { const d = Array.isArray(r) ? r[0] : r; movies = movies.concat(d.results || []); });
-    state.allMovies = movies.slice(0, 50);
-    renderGrid();
-  }).fail(function() { showError('Failed to load movies. Check your API key.'); });
+  $.ajax({
+    url: `${BASE}/movie/${cat}`,
+    data: { api_key: API_KEY, page: 1 },
+    dataType: 'json',
+    success: function(data) {
+      state.allMovies = data.results || [];
+      renderGrid();
+    },
+    error: function(xhr) {
+      showError('Failed to load movies: ' + xhr.status);
+    }
+  });
 }
 
 
@@ -658,9 +662,19 @@ function doSearch(query) {
   $('.tab-btn').removeClass('active');
   $('#fav-tab-btn').removeClass('active');
 
-  const reqs = [1,2,3,4,5].map(p =>
-    $.ajax({ url: `${BASE}/search/movie`, data: { api_key: API_KEY, query: state.query, page: p }, dataType: 'json' })
-  );
+  $.ajax({
+    url: `${BASE}/search/movie`,
+    data: { api_key: API_KEY, query: state.query, page: 1 },
+    dataType: 'json',
+    success: function(data) {
+      state.allMovies = data.results || [];
+      renderGrid();
+    },
+    error: function() {
+      showError('Search failed.');
+    }
+  });
+}
 
   $.when(...reqs).then(function(...responses) {
     let movies = [];
