@@ -676,13 +676,7 @@ function doSearch(query) {
   });
 }
 
-  $.when(...reqs).then(function(...responses) {
-    let movies = [];
-    responses.forEach(r => { const d = Array.isArray(r) ? r[0] : r; movies = movies.concat(d.results || []); });
-    state.allMovies = movies.slice(0, 50);
-    renderGrid();
-  }).fail(function() { showError('Search failed. Check your API key or network.'); });
-
+ 
 
 
 // AUTOCOMPLETE
